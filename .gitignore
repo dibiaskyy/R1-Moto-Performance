@@ -1,0 +1,40 @@
+# ==============================================================================
+# R1 MOTO PERFORMANCE - GITIGNORE
+# CRITICAL: Do NOT push raw internal assets and blueprint files to GitHub
+# ==============================================================================
+
+# 1. Raw Assets & Blueprint Folders (Strictly Excluded)
+About Us and Product Specs-20261007T080853Z-1-001/
+R1 Logo-20261007T080938Z-1-001/
+R1 Products Raw Photos-20261007T080800Z-1-001/
+the-blueprint.jpg
+R1_Moto_Performance_OJT_Project_Proposal_and_Sprint_Plan.pdf
+
+# Temporary files & scripts
+*.tmp
+*.log
+*.zip
+test_pdf.html
+test_doc.html
+proposal_source.html
+compile_pdf.ps1
+
+# Dependencies
+node_modules/
+vendor/
+dist/
+frontend/dist/
+
+# Environment Files
+.env
+.env.backup
+.env.local
+.env.production
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.user
