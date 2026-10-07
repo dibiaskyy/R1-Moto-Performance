@@ -6,9 +6,9 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('r1_token') || null);
+  const [isGuest, setIsGuest] = useState(sessionStorage.getItem('r1_guest') === 'true');
   const [loading, setLoading] = useState(true);
-  // Login / Sign Up is the first thing a visitor sees if not authenticated
-  const [authModalOpen, setAuthModalOpen] = useState(!localStorage.getItem('r1_token'));
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' or 'signup'
 
   useEffect(() => {
@@ -29,6 +29,8 @@ export const AuthProvider = ({ children }) => {
       const { user, token } = response.data;
       setUser(user);
       setToken(token);
+      setIsGuest(false);
+      sessionStorage.removeItem('r1_guest');
       localStorage.setItem('r1_token', token);
       localStorage.setItem('r1_user', JSON.stringify(user));
       setAuthModalOpen(false);
@@ -47,6 +49,8 @@ export const AuthProvider = ({ children }) => {
       const { user, token } = response.data;
       setUser(user);
       setToken(token);
+      setIsGuest(false);
+      sessionStorage.removeItem('r1_guest');
       localStorage.setItem('r1_token', token);
       localStorage.setItem('r1_user', JSON.stringify(user));
       setAuthModalOpen(false);
@@ -69,9 +73,17 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       setToken(null);
+      setIsGuest(false);
+      sessionStorage.removeItem('r1_guest');
       localStorage.removeItem('r1_token');
       localStorage.removeItem('r1_user');
     }
+  };
+
+  const continueAsGuest = () => {
+    setIsGuest(true);
+    sessionStorage.setItem('r1_guest', 'true');
+    setAuthModalOpen(false);
   };
 
   const openLogin = () => {
@@ -89,10 +101,12 @@ export const AuthProvider = ({ children }) => {
     token,
     loading,
     isAuthenticated: !!user,
+    isGuest,
     role: user?.role || 'guest',
     login,
     register,
     logout,
+    continueAsGuest,
     authModalOpen,
     setAuthModalOpen,
     authModalMode,
