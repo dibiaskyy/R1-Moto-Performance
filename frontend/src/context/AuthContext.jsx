@@ -7,7 +7,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('r1_token') || null);
   const [loading, setLoading] = useState(true);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  // Login / Sign Up is the first thing a visitor sees if not authenticated
+  const [authModalOpen, setAuthModalOpen] = useState(!localStorage.getItem('r1_token'));
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' or 'signup'
 
   useEffect(() => {

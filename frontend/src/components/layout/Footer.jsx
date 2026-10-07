@@ -10,14 +10,13 @@ export default function Footer() {
           
           {/* Brand & Community Mission */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-lg bg-rose-600 flex items-center justify-center font-display font-black text-white text-lg">
-                R1
-              </div>
-              <span className="font-display font-black text-lg text-white">
-                MOTO <span className="text-rose-500">PERFORMANCE</span>
-              </span>
-            </div>
+            <Link to="/" className="inline-block">
+              <img
+                src="/images/r1-logo-full.png"
+                alt="R1 Moto Performance"
+                className="h-10 w-auto object-contain drop-shadow-[0_4px_12px_rgba(225,29,72,0.35)]"
+              />
+            </Link>
             <p className="text-xs leading-relaxed text-slate-400">
               At R1 Moto, we don't just sell parts—we foster a community connecting riders, mechanics, scouts, and dealerships across the Philippines.
             </p>

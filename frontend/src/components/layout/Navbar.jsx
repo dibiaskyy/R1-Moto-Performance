@@ -23,19 +23,13 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-[#0b0f19]/90 backdrop-blur-md border-b border-[#1f2430]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-lg bg-rose-600 flex items-center justify-center font-display font-black text-white text-xl shadow-lg shadow-rose-900/40 group-hover:bg-rose-500 transition">
-            R1
-          </div>
-          <div className="flex flex-col">
-            <span className="font-display font-black text-lg sm:text-xl tracking-wider text-white leading-none">
-              MOTO <span className="text-rose-500">PERFORMANCE</span>
-            </span>
-            <span className="text-[10px] tracking-widest text-slate-400 font-semibold uppercase mt-0.5">
-              Precision CVT Engineering
-            </span>
-          </div>
+        {/* Brand Logo - Only R1 Logo as requested */}
+        <Link to="/" className="flex items-center space-x-3 group" title="R1 Moto Performance">
+          <img
+            src="/images/r1-logo-icon.png"
+            alt="R1"
+            className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_14px_rgba(225,29,72,0.45)]"
+          />
         </Link>
 
         {/* Desktop Navigation Links */}

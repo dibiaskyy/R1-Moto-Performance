@@ -57,15 +57,28 @@ export default function AuthModal() {
         <button
           onClick={() => setAuthModalOpen(false)}
           className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+          aria-label="Close"
         >
           <X size={20} />
         </button>
+
+        {/* Brand Header */}
+        <div className="text-center pt-2 pb-4">
+          <img
+            src="/images/r1-logo-full.png"
+            alt="R1 Moto Performance"
+            className="h-12 w-auto mx-auto object-contain drop-shadow-[0_4px_16px_rgba(225,29,72,0.4)]"
+          />
+          <p className="text-xs text-rose-400 font-semibold tracking-wide uppercase mt-2">
+            Enhance your ride, Elevate your drive
+          </p>
+        </div>
 
         {/* Header Tabs */}
         <div className="flex border-b border-slate-800 mb-6 pb-2">
           <button
             onClick={() => { setAuthModalMode('login'); setError(''); }}
-            className={`pb-2 text-base font-semibold transition border-b-2 mr-6 ${
+            className={`pb-2 text-sm sm:text-base font-semibold transition border-b-2 mr-6 ${
               authModalMode === 'login'
                 ? 'border-rose-600 text-rose-500'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -212,6 +225,16 @@ export default function AuthModal() {
               🏍️ Rider
             </button>
           </div>
+        </div>
+
+        {/* Continue as Guest */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => setAuthModalOpen(false)}
+            className="text-xs text-slate-400 hover:text-slate-200 transition underline underline-offset-4"
+          >
+            Explore site as Guest
+          </button>
         </div>
 
       </div>
