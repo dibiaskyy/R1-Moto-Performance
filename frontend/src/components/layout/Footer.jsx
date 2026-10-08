@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-12 border-b border-white/[0.08]">
           
           <div className="lg:col-span-6 space-y-4">
-            <Link to="/" className="inline-block">
+            <Link to="/home" className="inline-block">
               <img
                 src="/images/r1-logo-full.png"
                 alt="R1 Moto Performance"

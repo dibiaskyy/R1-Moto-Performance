@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, User, Phone, ArrowRight, ShieldCheck, Bike, Sparkles, CheckCircle2, ChevronLeft } from 'lucide-react';
 
 export default function AuthLandingPage() {
-  const { login, register } = useAuth();
+  const { login, register, continueAsGuest } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState('login'); // 'login' or 'signup'
   const [formData, setFormData] = useState({
@@ -30,7 +30,7 @@ export default function AuthLandingPage() {
     if (mode === 'login') {
       const res = await login({ email: formData.email, password: formData.password });
       if (res.success) {
-        navigate('/');
+        navigate('/home');
       } else {
         setError(res.message);
       }
@@ -42,7 +42,7 @@ export default function AuthLandingPage() {
       }
       const res = await register(formData);
       if (res.success) {
-        navigate('/');
+        navigate('/home');
       } else {
         setError(res.message);
       }
@@ -55,7 +55,7 @@ export default function AuthLandingPage() {
     setError('');
     const res = await login({ email, password: 'password' });
     if (res.success) {
-      navigate('/');
+      navigate('/home');
     } else {
       setError(res.message);
     }
@@ -71,10 +71,13 @@ export default function AuthLandingPage() {
 
       {/* Top Header Navigation */}
       <header className="px-6 py-5 max-w-7xl mx-auto w-full flex items-center justify-between z-10">
-        <Link to="/" className="inline-flex items-center space-x-2 text-xs font-semibold text-neutral-400 hover:text-white transition">
+        <button 
+          onClick={() => { continueAsGuest(); navigate('/home'); }}
+          className="inline-flex items-center space-x-2 text-xs font-semibold text-neutral-400 hover:text-white transition cursor-pointer"
+        >
           <ChevronLeft size={16} />
-          <span>Back to Homepage</span>
-        </Link>
+          <span>Explore Homepage</span>
+        </button>
         <Link to="/" className="text-xs text-rose-500 hover:text-rose-400 font-bold uppercase tracking-widest font-heading">
           R1 MOTO PERFORMANCE
         </Link>
@@ -310,12 +313,13 @@ export default function AuthLandingPage() {
 
               {/* Guest Access Link */}
               <div className="mt-5 pt-3 text-center border-t border-white/10">
-                <Link
-                  to="/"
-                  className="text-xs text-neutral-400 hover:text-rose-400 transition underline underline-offset-4 font-medium"
+                <button
+                  type="button"
+                  onClick={() => { continueAsGuest(); navigate('/home'); }}
+                  className="text-xs text-neutral-400 hover:text-rose-400 transition underline underline-offset-4 font-medium cursor-pointer"
                 >
                   Explore website as Guest →
-                </Link>
+                </button>
               </div>
 
             </div>

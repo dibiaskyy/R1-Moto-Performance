@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Shield, User, LogOut, Menu, X, Bike, ShoppingBag, Search, ChevronDown, Target, MapPin, ExternalLink } from 'lucide-react';
 
@@ -8,9 +8,15 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
+    if (path === '/home') return location.pathname === '/home' || location.pathname === '/';
     return location.pathname === path;
   };
 
@@ -19,7 +25,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Brand Logo - R1 Logo Icon */}
-        <Link to="/" className="flex items-center space-x-3 group" title="R1 Moto Performance">
+        <Link to="/home" className="flex items-center space-x-3 group" title="R1 Moto Performance">
           <img
             src="/images/r1-logo-icon.png"
             alt="R1"
@@ -31,9 +37,9 @@ export default function Navbar() {
         <nav className="hidden lg:flex items-center space-x-1 font-heading text-xs font-semibold tracking-wider">
           
           <Link
-            to="/"
+            to="/home"
             className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
-              isActive('/')
+              isActive('/home')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
@@ -198,7 +204,7 @@ export default function Navbar() {
               )}
 
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="p-2 text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] rounded-full transition"
                 title="Log Out"
               >
@@ -288,7 +294,7 @@ export default function Navbar() {
                   Signed in as <strong className="text-white">{user.name}</strong> ({role})
                 </div>
                 <button
-                  onClick={() => { logout(); setMobileMenuOpen(false); }}
+                  onClick={async () => { await handleLogout(); setMobileMenuOpen(false); }}
                   className="w-full text-left py-2 px-3 text-xs text-rose-400 hover:bg-white/[0.05] rounded-lg"
                 >
                   Log Out
