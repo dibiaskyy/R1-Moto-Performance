@@ -1,77 +1,26 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import AuthModal from './components/auth/AuthModal';
 import HomePage from './pages/HomePage';
 import CatalogPage from './pages/CatalogPage';
 import AuthLandingPage from './pages/AuthLandingPage';
+import AboutPage from './pages/AboutPage';
+import DealerPage from './pages/DealerPage';
+import CareersPage from './pages/CareersPage';
+import ContactPage from './pages/ContactPage';
+import CompatibilityPage from './pages/CompatibilityPage';
 
-// Placeholder views for subsequent sprints
-const CompatibilityPlaceholder = () => (
-  <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-    <h1 className="text-3xl font-bold font-display text-white mb-4">Bike Compatibility Engine</h1>
-    <p className="text-slate-400 max-w-md mx-auto mb-8">
-      Sprint 2 Feature: Two-way fitment engine (Unit-to-Parts and Part-to-Units for Aerox, NMAX, Click, PCX).
-    </p>
-    <Link to="/" className="px-5 py-2.5 bg-rose-600 text-white rounded-lg font-semibold text-sm">
-      Back to Dashboard
-    </Link>
-  </div>
-);
-
-const DealerPlaceholder = () => (
-  <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-    <h1 className="text-3xl font-bold font-display text-white mb-4">Become a Dealer / Distributor</h1>
-    <p className="text-slate-400 max-w-md mx-auto mb-8">
-      Sprint 4 & 5 Feature: Dealership perks, document uploads (PNG/JPEG), wholesale order sheet, and PDF order generation.
-    </p>
-    <Link to="/" className="px-5 py-2.5 bg-rose-600 text-white rounded-lg font-semibold text-sm">
-      Back to Dashboard
-    </Link>
-  </div>
-);
-
-const AboutPlaceholder = () => (
-  <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-    <h1 className="text-3xl font-bold font-display text-white mb-4">About R1 Moto Performance</h1>
-    <p className="text-slate-400 max-w-md mx-auto mb-8">
-      Sprint 3 Feature: Company history, mission & vision, store locator, and verified marketplace channels.
-    </p>
-    <Link to="/" className="px-5 py-2.5 bg-rose-600 text-white rounded-lg font-semibold text-sm">
-      Back to Dashboard
-    </Link>
-  </div>
-);
-
+// Standard React Router v6 Layout with Outlet
 function MainLayout() {
-  const { isAuthenticated, isGuest } = useAuth();
-
-  // If user is not authenticated and has not chosen guest mode,
-  // show the Facebook-style standalone login landing page (NO homepage in the background)
-  if (!isAuthenticated && !isGuest) {
-    return <AuthLandingPage />;
-  }
-
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0f19] text-slate-100 selection:bg-rose-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#070709] text-neutral-100 selection:bg-rose-600 selection:text-white">
       <Navbar />
-      
       <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/catalog" element={<CatalogPage />} />
-          <Route path="/compatibility" element={<CompatibilityPlaceholder />} />
-          <Route path="/dealer" element={<DealerPlaceholder />} />
-          <Route path="/about" element={<AboutPlaceholder />} />
-          <Route path="/careers" element={<AboutPlaceholder />} />
-          <Route path="/contact" element={<AboutPlaceholder />} />
-        </Routes>
+        <Outlet />
       </main>
-
       <Footer />
-      <AuthModal />
     </div>
   );
 }
@@ -80,7 +29,25 @@ export default function App() {
   return (
     <Router>
       <AuthProvider>
-        <MainLayout />
+        <Routes>
+          {/* Standalone Facebook-Style Login & Registration */}
+          <Route path="/login" element={<AuthLandingPage />} />
+          <Route path="/register" element={<AuthLandingPage />} />
+
+          {/* Main Website with Navbar and Footer */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/catalog" element={<CatalogPage />} />
+            <Route path="/products" element={<CatalogPage />} />
+            <Route path="/compatibility" element={<CompatibilityPage />} />
+            <Route path="/dealer" element={<DealerPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/careers" element={<CareersPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="*" element={<HomePage />} />
+          </Route>
+        </Routes>
       </AuthProvider>
     </Router>
   );

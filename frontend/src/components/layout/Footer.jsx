@@ -1,135 +1,193 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Facebook, Shield, Award, Wrench, Heart } from 'lucide-react';
+import { ExternalLink, Facebook, Shield, Award, Wrench, Heart, Mail, ArrowRight } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#070a10] border-t border-[#1a1f2b] text-slate-400 text-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-[#070709] border-t border-white/[0.08] text-neutral-400 text-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        {/* Top Newsletter & Brand Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-12 border-b border-white/[0.08]">
           
-          {/* Brand & Community Mission */}
-          <div className="space-y-4 md:col-span-1">
+          <div className="lg:col-span-6 space-y-4">
             <Link to="/" className="inline-block">
               <img
                 src="/images/r1-logo-full.png"
                 alt="R1 Moto Performance"
-                className="h-10 w-auto object-contain drop-shadow-[0_4px_12px_rgba(225,29,72,0.35)]"
+                className="h-10 w-auto object-contain drop-shadow-[0_4px_16px_rgba(225,29,72,0.4)]"
               />
             </Link>
-            <p className="text-xs leading-relaxed text-slate-400">
-              At R1 Moto, we don't just sell parts—we foster a community connecting riders, mechanics, scouts, and dealerships across the Philippines.
+            <p className="text-xs leading-relaxed text-neutral-400 max-w-md">
+              At R1 Moto Performance, we don't just sell parts—we foster a nationwide community connecting riders, mechanics, tuners, and authorized dealerships across the Philippines.
             </p>
-            <div className="pt-1">
+            <div className="pt-2">
               <a
                 href="https://www.facebook.com/r1motoperformance"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center space-x-2 text-xs font-semibold text-rose-400 hover:text-rose-300 transition"
               >
-                <Facebook size={16} />
+                <Facebook size={15} />
                 <span>facebook.com/r1motoperformance</span>
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">
-              Explore Products
+          <div className="lg:col-span-6 space-y-3">
+            <h4 className="font-heading font-bold text-white text-sm uppercase tracking-wider">
+              Join the R1 Performance Club
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <p className="text-xs text-neutral-400">
+              Subscribe for new scooter fitment updates, track test releases, and exclusive wholesale dealer catalogs.
+            </p>
+            <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2 max-w-md pt-1">
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 px-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-full text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500"
+              />
+              <button
+                type="submit"
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider rounded-full transition shadow-md shadow-rose-950 flex items-center space-x-1.5"
+              >
+                <span>Subscribe</span>
+                <ArrowRight size={13} />
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        {/* Links Navigation Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-b border-white/[0.08]">
+          
+          <div>
+            <h5 className="font-heading font-bold text-white text-xs uppercase tracking-wider mb-4">
+              Performance Parts
+            </h5>
+            <ul className="space-y-2.5">
               <li>
-                <Link to="/catalog?category=cvt-transmission" className="hover:text-rose-400 transition">
-                  Pulley Sets & Clutch Bells
+                <Link to="/catalog?category=cvt-transmission" className="hover:text-white transition">
+                  CNC Pulley Sets & Drive Faces
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=cvt-tuning-calibration" className="hover:text-rose-400 transition">
-                  Flyball & Torque Springs
+                <Link to="/catalog?category=cvt-transmission" className="hover:text-white transition">
+                  Grooved Anti-Glaze Clutch Bells
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=braking-systems" className="hover:text-rose-400 transition">
+                <Link to="/catalog?category=cvt-tuning" className="hover:text-white transition">
+                  Calibrated Flyball Rollers
+                </Link>
+              </li>
+              <li>
+                <Link to="/catalog?category=braking" className="hover:text-white transition">
                   Ceramic Brake Pads
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-heading font-bold text-white text-xs uppercase tracking-wider mb-4">
+              Fitment & Support
+            </h5>
+            <ul className="space-y-2.5">
               <li>
-                <Link to="/compatibility" className="hover:text-rose-400 transition flex items-center space-x-1">
-                  <span>Bike Fitment Finder</span>
-                  <span className="px-1.5 py-0.5 text-[9px] bg-rose-600/30 text-rose-400 rounded">NEW</span>
+                <Link to="/compatibility" className="hover:text-white transition flex items-center space-x-1.5">
+                  <span>Scooter Fitment Lookup</span>
+                  <span className="px-1.5 py-0.2 bg-rose-600/30 text-rose-400 rounded text-[9px] font-bold">2-WAY</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/compatibility?unit=aerox-155" className="hover:text-white transition">
+                  Yamaha Aerox 155 Tuning
+                </Link>
+              </li>
+              <li>
+                <Link to="/compatibility?unit=click-125-150" className="hover:text-white transition">
+                  Honda Click 125i/150i/160
+                </Link>
+              </li>
+              <li>
+                <Link to="/compatibility?unit=nmax-155" className="hover:text-white transition">
+                  Yamaha NMAX 155 Specs
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Dealership & Careers */}
           <div>
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">
-              Opportunities
-            </h4>
-            <ul className="space-y-2.5 text-xs">
+            <h5 className="font-heading font-bold text-white text-xs uppercase tracking-wider mb-4">
+              B2B Dealership
+            </h5>
+            <ul className="space-y-2.5">
               <li>
-                <Link to="/dealer" className="hover:text-rose-400 transition">
-                  Become an Authorized Dealer
+                <Link to="/dealer" className="hover:text-white transition">
+                  Become Authorized Dealer
                 </Link>
               </li>
               <li>
-                <Link to="/dealer#perks" className="hover:text-rose-400 transition">
-                  Dealer Perks & Tier Margins
+                <Link to="/dealer" className="hover:text-white transition">
+                  Wholesale Tier Margins
                 </Link>
               </li>
               <li>
-                <Link to="/careers" className="hover:text-rose-400 transition">
-                  Join Our Team (Careers)
+                <Link to="/dealer" className="hover:text-white transition">
+                  Bulk Ordering & PDF Invoicing
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-rose-400 transition">
-                  Technical Support & Warranty
+                <Link to="/dealer" className="hover:text-white transition">
+                  Authorized Shop Directory
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Official Marketplace Stores */}
           <div>
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider mb-4">
-              Official Store Links
-            </h4>
-            <p className="text-xs text-slate-400 mb-3">
-              Buy directly from our verified partner stores with genuine warranty:
-            </p>
-            <div className="flex flex-col space-y-2">
-              <a
-                href="https://shopee.ph"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-200 hover:border-orange-500/50 hover:text-white transition"
-              >
-                <span>Shopee Official Mall</span>
-                <ExternalLink size={14} className="text-orange-500" />
-              </a>
-              <a
-                href="https://lazada.com.ph"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-200 hover:border-sky-500/50 hover:text-white transition"
-              >
-                <span>Lazada LazMall Flagship</span>
-                <ExternalLink size={14} className="text-sky-500" />
-              </a>
-            </div>
+            <h5 className="font-heading font-bold text-white text-xs uppercase tracking-wider mb-4">
+              Company & Brand
+            </h5>
+            <ul className="space-y-2.5">
+              <li>
+                <Link to="/about" className="hover:text-white transition">
+                  About R1 Moto Performance
+                </Link>
+              </li>
+              <li>
+                <Link to="/careers" className="hover:text-white transition">
+                  Careers & Job Openings
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-white transition">
+                  Customer Support & Warranty
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className="hover:text-white transition">
+                  Dealer Portal Sign In
+                </Link>
+              </li>
+            </ul>
           </div>
 
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} R1 Moto Performance. All rights reserved.</p>
-          <p className="mt-2 sm:mt-0">
-            Crafted for high-performance scooter racing and touring.
-          </p>
+        {/* Bottom Copyright & Guarantee */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-4">
+          <p>© {new Date().getFullYear()} R1 Moto Performance. All Rights Reserved. Engineered for the Peak.</p>
+          <div className="flex items-center space-x-4">
+            <span className="flex items-center space-x-1 text-neutral-400">
+              <Shield size={12} className="text-rose-500" />
+              <span>100% Genuine Performance Guarantee</span>
+            </span>
+          </div>
         </div>
+
       </div>
     </footer>
   );
