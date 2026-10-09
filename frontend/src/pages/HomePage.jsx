@@ -4,10 +4,10 @@ import {
   ArrowRight, 
   Bike, 
   ShoppingBag, 
-  Check, 
   ShieldCheck, 
-  Award, 
-  Truck
+  Truck, 
+  BadgeCheck, 
+  Lock
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -20,7 +20,7 @@ export default function HomePage() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-red-950/25 rounded-full blur-[100px] pointer-events-none -z-10"></div>
 
       {/* Main Single-Space Hero Container */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col items-center text-center space-y-6 sm:space-y-7 z-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col items-center text-center space-y-6 sm:space-y-7 z-10 my-auto">
         
         {/* BIG FULL R1 LOGO (Immediate Focal Point Above the Fold) */}
         <div className="w-full max-w-xl px-4 flex justify-center items-center">
@@ -32,20 +32,20 @@ export default function HomePage() {
         </div>
 
         {/* CRISP MOTORSPORT TAGLINE */}
-        <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-[0.25em] text-rose-500 uppercase">
-          Enhance your ride, Elevate your drive
-        </h2>
-
-        {/* SHORT, HIGH-IMPACT MARKETING STATEMENT */}
-        <p className="text-sm sm:text-base md:text-lg text-neutral-300 leading-relaxed max-w-xl mx-auto font-normal">
-          Upgrade your ride with precision performance parts built for faster acceleration, smoother power, and everyday reliability.
-        </p>
+        <div className="space-y-2">
+          <h2 className="text-xs sm:text-sm md:text-base font-extrabold tracking-[0.25em] text-rose-500 uppercase">
+            Enhance your ride, Elevate your drive
+          </h2>
+          <p className="text-sm sm:text-base md:text-lg text-neutral-300 leading-relaxed max-w-xl mx-auto font-normal">
+            Precision-machined motorcycle performance systems engineered for faster acceleration, smoother power, and everyday reliability.
+          </p>
+        </div>
 
         {/* PRIMARY CALL TO ACTION BUTTONS */}
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-2 w-full max-w-md mx-auto">
           <Link
             to="/catalog"
-            className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-neutral-200 text-black font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 shadow-xl shadow-white/5 flex items-center justify-center space-x-2 group"
+            className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 shadow-xl shadow-rose-600/25 hover:shadow-rose-600/40 flex items-center justify-center space-x-2 group"
           >
             <ShoppingBag size={15} />
             <span>Explore Catalog</span>
@@ -54,30 +54,30 @@ export default function HomePage() {
 
           <Link
             to="/compatibility"
-            className="w-full sm:w-auto px-8 py-3.5 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 hover:text-white border border-white/15 hover:border-rose-500/80 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-8 py-3.5 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 hover:text-white border border-white/15 hover:border-rose-500/80 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center space-x-2 backdrop-blur-sm"
           >
             <Bike size={16} className="text-rose-500" />
             <span>Check Fitment</span>
           </Link>
         </div>
 
-        {/* TRUST PILLARS BAR (Clean bottom accent) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 sm:pt-8 border-t border-white/[0.08] max-w-3xl mx-auto w-full text-[11px] text-neutral-400">
-          <div className="flex items-center justify-center space-x-1.5">
-            <Check size={14} className="text-rose-500 flex-shrink-0" />
-            <span>Guaranteed Fitment</span>
+        {/* E-COMMERCE TRUST PILLARS BAR */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 sm:pt-8 border-t border-white/[0.08] max-w-3xl mx-auto w-full text-[11px] text-neutral-300">
+          <div className="flex items-center justify-center space-x-2">
+            <ShieldCheck size={15} className="text-rose-500 flex-shrink-0" />
+            <span className="font-medium">Authorized Dealers</span>
           </div>
-          <div className="flex items-center justify-center space-x-1.5">
-            <Check size={14} className="text-rose-500 flex-shrink-0" />
-            <span>CNC Billet Precision</span>
+          <div className="flex items-center justify-center space-x-2">
+            <Truck size={15} className="text-rose-500 flex-shrink-0" />
+            <span className="font-medium">Nationwide Delivery</span>
           </div>
-          <div className="flex items-center justify-center space-x-1.5">
-            <Check size={14} className="text-rose-500 flex-shrink-0" />
-            <span>Authorized Dealers</span>
+          <div className="flex items-center justify-center space-x-2">
+            <BadgeCheck size={15} className="text-rose-500 flex-shrink-0" />
+            <span className="font-medium">100% Genuine Parts</span>
           </div>
-          <div className="flex items-center justify-center space-x-1.5">
-            <Check size={14} className="text-rose-500 flex-shrink-0" />
-            <span>Nationwide Logistics</span>
+          <div className="flex items-center justify-center space-x-2">
+            <Lock size={15} className="text-rose-500 flex-shrink-0" />
+            <span className="font-medium">Secure Checkout</span>
           </div>
         </div>
 
@@ -86,3 +86,6 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+

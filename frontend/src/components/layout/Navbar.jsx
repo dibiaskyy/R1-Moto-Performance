@@ -114,7 +114,7 @@ export default function Navbar() {
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
-            BIKE FITMENT
+            MOTOR FITMENT
           </Link>
 
           <Link
@@ -263,7 +263,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold tracking-wider rounded-lg text-neutral-300 hover:text-white hover:bg-white/[0.05]"
           >
-            BIKE FITMENT
+            MOTOR FITMENT
           </Link>
           <Link
             to="/dealer"
