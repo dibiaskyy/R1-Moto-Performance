@@ -55,6 +55,17 @@ const productConfigs = [
     ]
   },
   {
+    prefix: 'center_spring',
+    src: 'public/images/products/center-spring.png',
+    // Center spring: top seat coil, middle compression pitch, laser markings/spec, ground base coil
+    points: [
+      { name: 'center_spring_1', cx: 0.50, cy: 0.20, zoom: 2.4 }, // top ground spring seat
+      { name: 'center_spring_2', cx: 0.50, cy: 0.42, zoom: 2.4 }, // upper torque active coil
+      { name: 'center_spring_3', cx: 0.50, cy: 0.62, zoom: 2.4 }, // mid progressive pitch coils
+      { name: 'center_spring_4', cx: 0.50, cy: 0.82, zoom: 2.4 }, // bottom flat ground seat coil
+    ]
+  },
+  {
     prefix: 'flyball',
     src: 'public/images/products/flyball.png',
     // Flyball roller weights: outer teflon sleeve, brass core, weight bevel, smooth roller contact

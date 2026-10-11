@@ -114,7 +114,7 @@ export default function Navbar() {
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
-            MOTOR FITMENT
+            MOTOR COMPATIBILITY
           </Link>
 
           <Link
@@ -149,6 +149,20 @@ export default function Navbar() {
           >
             CONTACT US
           </Link>
+
+          {role === 'admin' && (
+            <Link
+              to="/admin"
+              className={`px-3.5 py-2 rounded-full transition-all duration-200 flex items-center space-x-1.5 ${
+                isActive('/admin')
+                  ? 'text-amber-300 bg-amber-500/20 border border-amber-500/40 shadow-inner'
+                  : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
+              }`}
+            >
+              <Shield size={13} />
+              <span>ADMIN PANEL</span>
+            </Link>
+          )}
         </nav>
 
         {/* Right Action Icons & Auth Controls (Automotive E-commerce layout) */}
@@ -196,10 +210,11 @@ export default function Navbar() {
               {role === 'admin' && (
                 <Link
                   to="/admin"
-                  className="p-2 text-neutral-400 hover:text-white hover:bg-white/[0.06] rounded-full transition"
+                  className="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 rounded-full font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition shadow-sm"
                   title="Admin Dashboard"
                 >
-                  <Shield size={17} />
+                  <Shield size={14} />
+                  <span>Admin Panel</span>
                 </Link>
               )}
 
@@ -263,7 +278,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold tracking-wider rounded-lg text-neutral-300 hover:text-white hover:bg-white/[0.05]"
           >
-            MOTOR FITMENT
+            MOTOR COMPATIBILITY
           </Link>
           <Link
             to="/dealer"

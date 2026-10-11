@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { 
   ShoppingBag, 
   ArrowRight, 
@@ -17,10 +18,15 @@ import {
   ShieldAlert,
   ShieldCheck,
   Zap,
-  Info
+  Info,
+  ZoomIn,
+  Sparkles,
+  ChevronRight,
+  Settings
 } from 'lucide-react';
 
 export default function CatalogPage() {
+  const { role } = useAuth();
   const [searchParams] = useSearchParams();
 
   // Filter States
@@ -31,7 +37,8 @@ export default function CatalogPage() {
   const [addedItem, setAddedItem] = useState(null);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [sortBy, setSortBy] = useState('featured');
-  const [modalTab, setModalTab] = useState('specs');
+  const [activeSpecIndex, setActiveSpecIndex] = useState(0);
+  const [macroModalSpec, setMacroModalSpec] = useState(null);
 
   useEffect(() => {
     const brandParam = searchParams.get('brand');
@@ -51,6 +58,7 @@ export default function CatalogPage() {
     else if (name.includes('clutch bell') || name.includes('bell')) prefix = 'bell';
     else if (name.includes('clutch lining')) prefix = 'clutch_lining';
     else if (name.includes('roller') || name.includes('flyball')) prefix = 'flyball';
+    else if (name.includes('center spring')) prefix = 'center_spring';
     else if (name.includes('clutch spring')) prefix = 'clutch_spring';
     else if (name.includes('cvt cleaner')) prefix = 'cvt_cleaner';
     else if (name.includes('slider piece')) prefix = 'slider_piece';
@@ -472,7 +480,7 @@ export default function CatalogPage() {
       model: 'ALL MODEL',
       specs: 'Tension-Rated Center Spring (1000RPM / 1500RPM)',
       desc: 'Rear pulley torque spring maintaining consistent belt grip and crisp downshifting.',
-      image: '/images/products/clutch-spring.png',
+      image: '/images/products/center-spring.png',
       brochureImage: '/images/brochures/Center Spring.jpg',
       priceNum: 450,
       price: '₱450',
@@ -900,8 +908,46 @@ export default function CatalogPage() {
     },
   ];
 
+  // State for live synced products
+  const [liveProducts, setLiveProducts] = useState(allProducts);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/api/v1/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.data && data.data.length > 0) {
+          // Merge live prices & edits with base product specs
+          const merged = allProducts.map(p => {
+            const dbMatch = data.data.find(d => 
+              (d.id === p.id) || 
+              (d.sku && p.partNumber && d.sku.toLowerCase() === p.partNumber.toLowerCase()) ||
+              (d.name && p.name && d.name.toLowerCase() === p.name.toLowerCase())
+            );
+            if (dbMatch) {
+              const livePrice = Number(dbMatch.retail_price || dbMatch.suggested_retail_price || p.priceNum);
+              const liveImage = dbMatch.primary_image || dbMatch.image_url || p.image;
+              const liveSpecs = Array.isArray(dbMatch.specs) && dbMatch.specs.length > 0 ? dbMatch.specs : p.specHighlights;
+              return {
+                ...p,
+                name: dbMatch.name || p.name,
+                image: liveImage,
+                stock_quantity: dbMatch.stock_quantity ?? 50,
+                priceNum: livePrice,
+                price: `₱${livePrice.toLocaleString()}`,
+                desc: dbMatch.description || p.desc,
+                specHighlights: liveSpecs
+              };
+            }
+            return p;
+          });
+          setLiveProducts(merged);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Filtering Logic
-  const filtered = allProducts.filter((p) => {
+  const filtered = liveProducts.filter((p) => {
     // Brand match
     let matchBrand = true;
     if (selectedBrand !== 'all') {
@@ -965,7 +1011,7 @@ export default function CatalogPage() {
 
   const openProductDetails = (product) => {
     setQuickViewProduct(product);
-    setModalTab('specs');
+    setActiveSpecIndex(0);
   };
 
   const hasActiveFilters = selectedBrand !== 'all' || selectedModel !== 'all' || selectedCategory !== 'all' || searchQuery !== '';
@@ -1286,10 +1332,10 @@ export default function CatalogPage() {
               </button>
             </div>
 
-            {/* Modal Body: Commercial Brochure Spread */}
-            <div className="overflow-y-auto p-5 sm:p-7 lg:p-8 space-y-7 flex-1 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#110e16] via-[#09090d] to-[#060608]">
+            {/* Modal Body: Exact Single Showcase Card Layout */}
+            <div className="overflow-y-auto p-4 sm:p-6 lg:p-7 space-y-6 flex-1 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#130f1a] via-[#09090e] to-[#050508]">
               
-              {/* PAGE SPREAD TOP: COMMERCIAL HERO STAGE (Like the glossy front cover of the R1 Brochure) */}
+              {/* PAGE SPREAD TOP: COMMERCIAL HERO STAGE (Original proportions and position) */}
               <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#160c12] via-[#100c14] to-[#0a0a10] p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
                 {/* Motorsport checkered & crimson lighting atmosphere */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/15 rounded-full blur-[110px] pointer-events-none"></div>
@@ -1321,7 +1367,7 @@ export default function CatalogPage() {
                     </span>
                   </div>
 
-                  <h2 className="font-heading font-black text-3xl sm:text-4xl text-white uppercase tracking-tight leading-none drop-shadow-md">
+                  <h2 className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-white uppercase tracking-tight leading-none drop-shadow-md">
                     {quickViewProduct.name}
                   </h2>
 
@@ -1329,35 +1375,35 @@ export default function CatalogPage() {
                     {quickViewProduct.desc}
                   </p>
 
-                  {/* Quick Highlight Feature Pills */}
+                  {/* Feature Checkmarks (2 columns) */}
                   {quickViewProduct.features && (
-                    <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-left">
                       {quickViewProduct.features.slice(0, 4).map((f, i) => (
-                        <div key={i} className="flex items-center space-x-2 text-[11px] text-neutral-300 bg-white/[0.04] border border-white/[0.08] px-2.5 py-1.5 rounded-lg">
+                        <div key={i} className="flex items-center space-x-2 text-[11px] text-neutral-300 bg-white/[0.04] border border-white/[0.08] px-3 py-2 rounded-xl backdrop-blur-sm">
                           <Check size={12} className="text-rose-500 flex-shrink-0" />
-                          <span className="truncate">{f}</span>
+                          <span className="truncate font-medium">{f}</span>
                         </div>
                       ))}
                     </div>
                   )}
 
-                  {/* Price Banner */}
-                  <div className="pt-2 flex items-baseline justify-center md:justify-start space-x-3 border-t border-white/10">
+                  {/* Embedded Price */}
+                  <div className="pt-2">
                     <span className="text-3xl sm:text-4xl font-heading font-black text-white tracking-tight">
                       {quickViewProduct.price}
                     </span>
                   </div>
                 </div>
+
               </div>
 
-              {/* BROCHURE BOTTOM SECTION: 4-COLUMN CIRCULAR MACRO BREAKDOWN (Brochure Zoom Insets) */}
+              {/* Bottom Section: Component Engineering Zoom Breakdown */}
               <div className="space-y-4">
-                
-                {/* Section Header with Red Racing Stripe */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <span className="h-5 w-1.5 bg-gradient-to-b from-rose-500 to-red-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"></span>
-                    <h3 className="font-heading font-black text-sm sm:text-base uppercase tracking-wider text-white">
+                {/* Header Strip matching screenshot */}
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="h-4 w-1.5 bg-gradient-to-b from-rose-500 to-red-600 rounded-full shadow-[0_0_8px_rgba(225,29,72,0.8)]"></span>
+                    <h3 className="font-heading font-black text-xs sm:text-sm uppercase tracking-wider text-white">
                       Component Engineering Zoom Breakdown
                     </h3>
                   </div>
@@ -1366,66 +1412,90 @@ export default function CatalogPage() {
                   </span>
                 </div>
 
-                {/* 4-Item Feature Columns with Circular Inset Highlights */}
+                {/* Horizontal Macro Cards with Hover and Click-to-Pop-Up */}
                 {quickViewProduct.specHighlights && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                    {quickViewProduct.specHighlights.map((spec, i) => (
-                      <div 
-                        key={i} 
-                        className="relative rounded-2xl bg-[#0f0f16] border border-white/[0.08] hover:border-rose-500/50 p-5 flex flex-col items-center text-center transition-all duration-300 group hover:-translate-y-1 shadow-xl hover:shadow-rose-950/20 overflow-hidden"
-                      >
-                        {/* Subtle top indicator glow on hover */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rose-600/0 group-hover:via-rose-600 transition-all duration-300"></div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                    {quickViewProduct.specHighlights.map((spec, i) => {
+                      const isSelected = activeSpecIndex === i;
+                      const macroImg = getMacroZoomImage(quickViewProduct, i);
+                      return (
+                        <div 
+                          key={i} 
+                          onMouseEnter={() => setActiveSpecIndex(i)}
+                          onClick={() => {
+                            setActiveSpecIndex(i);
+                            setMacroModalSpec({
+                              spec,
+                              index: i,
+                              img: macroImg
+                            });
+                          }}
+                          className={`group relative rounded-2xl p-4 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden border shadow-lg ${
+                            isSelected
+                              ? 'bg-gradient-to-b from-[#1b101c] via-[#130f1a] to-[#0c0c14] border-rose-500 shadow-[0_0_25px_rgba(225,29,72,0.25)] -translate-y-1'
+                              : 'bg-[#101018] border-white/[0.08] hover:border-white/25 hover:bg-[#151522] hover:-translate-y-0.5'
+                          }`}
+                        >
+                          {/* Top indicator bar */}
+                          <div className={`absolute top-0 left-0 right-0 h-1 transition-all duration-300 ${
+                            isSelected 
+                              ? 'bg-gradient-to-r from-rose-500 via-red-600 to-rose-500 shadow-[0_0_10px_rgba(225,29,72,1)]' 
+                              : 'bg-transparent group-hover:bg-white/20'
+                          }`}></div>
 
-                        {/* Circular Macro Focus Frame (Metallic Outer Ring + Pure Product Close-up) */}
-                        <div className="w-28 h-28 rounded-full bg-black border-2 border-white/80 group-hover:border-rose-500 transition-all duration-300 p-1 flex items-center justify-center overflow-hidden mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.9)] relative ring-2 ring-black/60 group-hover:scale-105">
-                          <img
-                            src={getMacroZoomImage(quickViewProduct, i)}
-                            alt={spec.title}
-                            className="w-full h-full object-cover rounded-full filter contrast-110 brightness-105 group-hover:scale-115 transition-transform duration-500"
-                          />
-                          {/* Glossy sheen reflection on the macro circle lens */}
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 via-transparent to-black/30 pointer-events-none"></div>
+                          {/* Circular Macro Lens with Hover Magnification */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full p-0.5 flex-shrink-0 flex items-center justify-center overflow-hidden transition-all duration-300 relative ${
+                              isSelected
+                                ? 'bg-black border-2 border-rose-500 ring-4 ring-rose-500/25 scale-105 shadow-[0_0_20px_rgba(225,29,72,0.5)]'
+                                : 'bg-black border-2 border-white/70 ring-2 ring-black/80 group-hover:border-rose-400 group-hover:scale-105'
+                            }`}>
+                              <img
+                                src={macroImg}
+                                alt={spec.title}
+                                className="w-full h-full object-cover rounded-full filter contrast-110 brightness-105 transition-transform duration-500 group-hover:scale-120"
+                              />
+                              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/25 via-transparent to-black/40 pointer-events-none"></div>
+
+                              <div className={`absolute bottom-0 right-0 w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-mono font-bold shadow-md transition-colors ${
+                                isSelected ? 'bg-rose-600 text-white' : 'bg-black/90 text-neutral-300 border border-white/20 group-hover:bg-rose-600 group-hover:text-white'
+                              }`}>
+                                {i + 1}
+                              </div>
+                            </div>
+
+                            <span className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border transition-all ${
+                              isSelected 
+                                ? 'bg-rose-500 text-white border-rose-400 shadow-md shadow-rose-600/30' 
+                                : 'bg-white/5 text-neutral-400 border-white/10 group-hover:bg-rose-500/20 group-hover:text-rose-400 group-hover:border-rose-500/30'
+                            }`}>
+                              <span className="flex items-center space-x-1">
+                                <ZoomIn size={10} />
+                                <span>Inspect</span>
+                              </span>
+                            </span>
+                          </div>
+
+                          {/* Spec Title & Description */}
+                          <div className="space-y-2 text-left">
+                            <div className="inline-block py-1 px-2.5 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white font-heading font-black text-[10px] sm:text-[11px] uppercase tracking-wider rounded shadow-md border-t border-rose-400/30">
+                              {spec.title}
+                            </div>
+                            <p className="text-[11px] text-neutral-300 leading-relaxed font-normal line-clamp-3 group-hover:text-neutral-100 transition-colors">
+                              {spec.desc}
+                            </p>
+                          </div>
+
+                          {/* Hover Prompt */}
+                          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-neutral-400 group-hover:text-rose-400 transition-colors">
+                            <span>Click to expand spec</span>
+                            <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                          </div>
                         </div>
-
-                        {/* Red Capsule Title Ribbon (matches RED BANNER in official brochure) */}
-                        <div className="w-full py-1.5 px-3 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white font-heading font-black text-[11px] sm:text-xs uppercase tracking-wider rounded-md mb-2.5 shadow-md shadow-rose-950/50 border-t border-rose-400/30">
-                          {spec.title}
-                        </div>
-
-                        {/* Accurate technical explanation */}
-                        <p className="text-[11px] text-neutral-300 leading-relaxed font-normal mt-1">
-                          {spec.desc}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
-
-              </div>
-
-              {/* GUARANTEED VEHICLE FITMENT TAGS */}
-              <div className="rounded-2xl bg-[#0f0f16] border border-white/[0.08] p-5 space-y-3 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-xs font-mono text-neutral-300 uppercase tracking-widest font-bold">
-                    <Bike size={15} className="text-rose-500" />
-                    <span>Guaranteed Bolt-On Fitment Compatibility</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    Plug & Play Direct
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {quickViewProduct.fitment.map((bike, i) => (
-                    <span 
-                      key={i} 
-                      className="px-3.5 py-1.5 rounded-lg bg-[#151522] border border-white/10 text-xs font-semibold text-neutral-200 flex items-center space-x-2 hover:border-rose-500/40 transition"
-                    >
-                      <CheckCircle2 size={13} className="text-rose-500 flex-shrink-0" />
-                      <span>{bike}</span>
-                    </span>
-                  ))}
-                </div>
               </div>
 
             </div>
@@ -1477,6 +1547,83 @@ export default function CatalogPage() {
                   <span>Buy Now</span>
                 </button>
               </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* MACRO ZOOM & SPEC POP-UP MODAL (Triggered when user clicks any macro circle or zone) */}
+      {macroModalSpec && (
+        <div 
+          className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[60] flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+          onClick={() => setMacroModalSpec(null)}
+        >
+          <div 
+            className="max-w-xl w-full rounded-3xl bg-gradient-to-b from-[#180f1b] via-[#100f16] to-[#0a0a0f] border-2 border-rose-500/50 shadow-[0_0_80px_rgba(225,29,72,0.4)] p-6 sm:p-8 relative overflow-hidden text-center animate-scaleUp"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top decorative motorsport glow */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-rose-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            {/* Modal Close Button */}
+            <button
+              onClick={() => setMacroModalSpec(null)}
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-rose-600 text-neutral-300 hover:text-white flex items-center justify-center transition-all duration-200 border border-white/15 hover:rotate-90"
+              title="Close Spec Popup"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header Tag */}
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <span className="px-3.5 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 font-mono text-[10px] uppercase font-bold tracking-widest flex items-center space-x-1.5">
+                <Sparkles size={12} />
+                <span>R1 Engineering Detail</span>
+              </span>
+              <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
+                Precision Macro Loupe
+              </span>
+            </div>
+
+            {/* Large Optical Zoom Lens Loupe */}
+            <div className="relative mx-auto my-3 w-44 h-44 sm:w-52 sm:h-52 rounded-full p-1 bg-black border-4 border-rose-500 ring-8 ring-rose-500/20 shadow-[0_0_40px_rgba(225,29,72,0.6)] flex items-center justify-center overflow-hidden">
+              <img
+                src={macroModalSpec.img}
+                alt={macroModalSpec.spec.title}
+                className="w-full h-full object-cover rounded-full filter contrast-125 brightness-105 scale-110"
+              />
+              {/* Glass Lens Highlight Sheen */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/35 via-transparent to-black/50 pointer-events-none"></div>
+              
+              {/* Crosshair Optics Reticle Overlay */}
+              <div className="absolute inset-0 border border-white/20 rounded-full pointer-events-none"></div>
+              <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-rose-500/25 pointer-events-none"></div>
+              <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-rose-500/25 pointer-events-none"></div>
+            </div>
+
+            {/* Official Red Ribbon Title */}
+            <div className="my-3">
+              <div className="inline-block py-1.5 px-4 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white font-heading font-black text-sm sm:text-base uppercase tracking-wider rounded-lg shadow-lg border-t border-rose-400/40">
+                {macroModalSpec.spec.title}
+              </div>
+            </div>
+
+            {/* Spec Full Paragraph */}
+            <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed font-normal px-2 sm:px-6">
+              {macroModalSpec.spec.desc}
+            </p>
+
+            {/* Bottom Actions */}
+            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-neutral-400">
+              <span className="text-rose-400 font-bold">100% R1 Performance Engineering</span>
+              <button
+                onClick={() => setMacroModalSpec(null)}
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-sans text-xs font-bold uppercase tracking-wider transition"
+              >
+                Back to Product
+              </button>
             </div>
 
           </div>

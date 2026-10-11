@@ -8,11 +8,13 @@ export default function AuthModal() {
     name: '',
     email: '',
     phone: '',
+    role: 'rider', // 'rider', 'dealer', 'admin'
     password: '',
     password_confirmation: '',
     motorcycle_model_id: '',
   });
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!authModalOpen) return null;
@@ -20,6 +22,7 @@ export default function AuthModal() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
+    setSuccessMsg('');
   };
 
   const handleSubmit = async (e) => {
@@ -37,15 +40,18 @@ export default function AuthModal() {
         return;
       }
       const res = await register(formData);
-      if (!res.success) setError(res.message);
+      if (res.success) {
+        setAuthModalMode('login');
+        setSuccessMsg(res.message || 'Account created successfully! Please sign in.');
+        setFormData(prev => ({
+          ...prev,
+          password: '',
+          password_confirmation: ''
+        }));
+      } else {
+        setError(res.message);
+      }
     }
-    setIsSubmitting(false);
-  };
-
-  // Quick Demo Logins for Testing & Supervisor Evaluation
-  const handleQuickLogin = async (email) => {
-    setIsSubmitting(true);
-    await login({ email, password: 'password' });
     setIsSubmitting(false);
   };
 
@@ -98,6 +104,12 @@ export default function AuthModal() {
           </button>
         </div>
 
+        {successMsg && (
+          <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs rounded-lg">
+            ✓ {successMsg}
+          </div>
+        )}
+
         {error && (
           <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs rounded-lg">
             {error}
@@ -106,21 +118,70 @@ export default function AuthModal() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {authModalMode === 'signup' && (
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Full Name</label>
-              <div className="relative">
-                <User size={16} className="absolute left-3 top-3 text-slate-500" />
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  placeholder="Juan Dela Cruz"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:border-rose-500 text-slate-100"
-                />
+            <>
+              {/* 3 Categories: Rider, Dealer, Admin */}
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">Account Type</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: 'rider' }))}
+                    className={`py-2 px-1 text-center rounded-lg border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                      formData.role === 'rider'
+                        ? 'bg-rose-600/20 border-rose-500 text-rose-400'
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Bike size={16} />
+                    <span className="text-[10px] uppercase">Rider</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: 'dealer' }))}
+                    className={`py-2 px-1 text-center rounded-lg border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                      formData.role === 'dealer'
+                        ? 'bg-sky-600/20 border-sky-500 text-sky-400'
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <ShieldCheck size={16} />
+                    <span className="text-[10px] uppercase">Dealer</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: 'admin' }))}
+                    className={`py-2 px-1 text-center rounded-lg border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                      formData.role === 'admin'
+                        ? 'bg-amber-600/20 border-amber-500 text-amber-400'
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-sm leading-none">👑</span>
+                    <span className="text-[10px] uppercase">Admin</span>
+                  </button>
+                </div>
               </div>
-            </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">
+                  {formData.role === 'dealer' ? 'Dealership / Shop Name' : 'Full Name'}
+                </label>
+                <div className="relative">
+                  <User size={16} className="absolute left-3 top-3 text-slate-500" />
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder={formData.role === 'dealer' ? 'SpeedZone Moto Parts' : 'Juan Dela Cruz'}
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2 text-sm bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:border-rose-500 text-slate-100"
+                  />
+                </div>
+              </div>
+            </>
           )}
 
           <div>
@@ -199,33 +260,6 @@ export default function AuthModal() {
             <ArrowRight size={16} />
           </button>
         </form>
-
-        {/* Demo Fast Logins for Testing */}
-        <div className="mt-6 pt-4 border-t border-slate-800">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Quick Demo Login (Sprint Testing)
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => handleQuickLogin('admin@r1moto.com')}
-              className="py-1.5 px-2 text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800 rounded-md transition"
-            >
-              👑 Admin
-            </button>
-            <button
-              onClick={() => handleQuickLogin('dealer@r1moto.com')}
-              className="py-1.5 px-2 text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-sky-400 border border-slate-800 rounded-md transition"
-            >
-              🏢 Dealer
-            </button>
-            <button
-              onClick={() => handleQuickLogin('rider@r1moto.com')}
-              className="py-1.5 px-2 text-[11px] font-medium bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-md transition"
-            >
-              🏍️ Rider
-            </button>
-          </div>
-        </div>
 
         {/* Continue as Guest */}
         <div className="mt-4 text-center">

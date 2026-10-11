@@ -88,7 +88,7 @@ export default function AboutPage() {
             <div className="space-y-2 pt-2">
               <div className="flex items-center space-x-2 text-xs text-neutral-300">
                 <CheckCircle2 size={15} className="text-rose-500 flex-shrink-0" />
-                <span>100% Plug-and-play fitment validation on local scooter chassis</span>
+                <span>100% Plug-and-play Motor Compatibility validation on local motorcycle chassis</span>
               </div>
               <div className="flex items-center space-x-2 text-xs text-neutral-300">
                 <CheckCircle2 size={15} className="text-rose-500 flex-shrink-0" />

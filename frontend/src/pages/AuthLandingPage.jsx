@@ -11,14 +11,22 @@ export default function AuthLandingPage() {
     name: '',
     email: '',
     phone: '',
+    role: 'rider', // 'rider', 'dealer', 'admin'
     password: '',
     password_confirmation: '',
   });
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
+    setSuccessMsg('');
+  };
+
+  const handleRoleSelect = (selectedRole) => {
+    setFormData(prev => ({ ...prev, role: selectedRole }));
     setError('');
   };
 
@@ -30,7 +38,11 @@ export default function AuthLandingPage() {
     if (mode === 'login') {
       const res = await login({ email: formData.email, password: formData.password });
       if (res.success) {
-        navigate('/home');
+        if (res.user && res.user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/home');
+        }
       } else {
         setError(res.message);
       }
@@ -42,22 +54,17 @@ export default function AuthLandingPage() {
       }
       const res = await register(formData);
       if (res.success) {
-        navigate('/home');
+        // Switch to login view instead of directing straight into system
+        setMode('login');
+        setSuccessMsg(res.message || 'Account successfully created! Please log in to continue.');
+        setFormData(prev => ({
+          ...prev,
+          password: '',
+          password_confirmation: ''
+        }));
       } else {
         setError(res.message);
       }
-    }
-    setIsSubmitting(false);
-  };
-
-  const handleDemoLogin = async (email) => {
-    setIsSubmitting(true);
-    setError('');
-    const res = await login({ email, password: 'password' });
-    if (res.success) {
-      navigate('/home');
-    } else {
-      setError(res.message);
     }
     setIsSubmitting(false);
   };
@@ -111,22 +118,22 @@ export default function AuthLandingPage() {
 
             {/* Description */}
             <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
-              The premier platform for motorcycle enthusiasts, racers, and mechanics. Connect with verified dealerships, explore guaranteed 2-way scooter fitments, and access wholesale performance parts.
+              The premier platform for motorcycle enthusiasts, racers, and mechanics. Connect with verified dealerships, explore guaranteed Motor Compatibility, and access wholesale performance parts.
             </p>
 
             {/* Feature Highlights */}
-            <div className="pt-2 space-y-3 max-w-md mx-auto lg:mx-0 text-left">
+            <div className="pt-2 space-y-2.5 max-w-md mx-auto lg:mx-0 text-left">
               <div className="flex items-center space-x-3 text-xs sm:text-sm text-neutral-300">
                 <CheckCircle2 size={16} className="text-rose-500 flex-shrink-0" />
-                <span>100% Guaranteed 2-Way Scooter Fitment Engine</span>
+                <span>Guaranteed Motor Parts Compatibility</span>
               </div>
               <div className="flex items-center space-x-3 text-xs sm:text-sm text-neutral-300">
                 <CheckCircle2 size={16} className="text-rose-500 flex-shrink-0" />
-                <span>B2B Dealership Wholesale Portal & Automated PDF Orders</span>
+                <span>100% Genuine R1 Performance Components</span>
               </div>
               <div className="flex items-center space-x-3 text-xs sm:text-sm text-neutral-300">
                 <CheckCircle2 size={16} className="text-rose-500 flex-shrink-0" />
-                <span>Genuine CNC Transmission & Racing Friction Components</span>
+                <span>Fast & Reliable Nationwide Delivery</span>
               </div>
             </div>
 
@@ -139,14 +146,21 @@ export default function AuthLandingPage() {
               {/* Form Title */}
               <div className="mb-6">
                 <h2 className="text-xl font-bold font-heading uppercase text-white">
-                  {mode === 'login' ? 'Sign In to R1 Performance' : 'Create Rider Account'}
+                  {mode === 'login' ? 'Sign In to R1 Moto Performance' : 'Create Rider / Partner Account'}
                 </h2>
                 <p className="text-xs text-neutral-400 mt-1">
                   {mode === 'login'
                     ? 'Enter your credentials to access your garage and orders.'
-                    : 'Fast and easy registration for riders and dealerships.'}
+                    : 'Choose your account type and fill in your details.'}
                 </p>
               </div>
+
+              {successMsg && (
+                <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs rounded-xl flex items-center space-x-2">
+                  <CheckCircle2 size={16} className="shrink-0 text-emerald-400" />
+                  <span>{successMsg}</span>
+                </div>
+              )}
 
               {error && (
                 <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs rounded-xl">
@@ -157,20 +171,83 @@ export default function AuthLandingPage() {
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {mode === 'signup' && (
-                  <div>
-                    <div className="relative">
-                      <User size={17} className="absolute left-3.5 top-3.5 text-neutral-500" />
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        placeholder="Full Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-xs bg-[#08080b] border border-white/10 rounded-xl focus:outline-none focus:border-rose-500 text-neutral-100 placeholder-neutral-500 transition"
-                      />
+                  <>
+                    {/* 3 Categories of Signup: Rider, Dealer, Admin */}
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-2">
+                        Select Account Type:
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleRoleSelect('rider')}
+                          className={`py-2 px-1 text-center rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                            formData.role === 'rider'
+                              ? 'bg-rose-600/20 border-rose-500 text-rose-400 shadow-md shadow-rose-950/40'
+                              : 'bg-white/[0.03] border-white/10 text-neutral-400 hover:text-white hover:bg-white/[0.06]'
+                          }`}
+                        >
+                          <Bike size={18} />
+                          <span className="text-[11px] uppercase tracking-wide">Rider</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRoleSelect('dealer')}
+                          className={`py-2 px-1 text-center rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                            formData.role === 'dealer'
+                              ? 'bg-sky-600/20 border-sky-500 text-sky-400 shadow-md shadow-sky-950/40'
+                              : 'bg-white/[0.03] border-white/10 text-neutral-400 hover:text-white hover:bg-white/[0.06]'
+                          }`}
+                        >
+                          <ShieldCheck size={18} />
+                          <span className="text-[11px] uppercase tracking-wide">Dealer</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRoleSelect('admin')}
+                          className={`py-2 px-1 text-center rounded-xl border text-xs font-bold transition flex flex-col items-center justify-center space-y-1 ${
+                            formData.role === 'admin'
+                              ? 'bg-amber-600/20 border-amber-500 text-amber-400 shadow-md shadow-amber-950/40'
+                              : 'bg-white/[0.03] border-white/10 text-neutral-400 hover:text-white hover:bg-white/[0.06]'
+                          }`}
+                        >
+                          <Sparkles size={18} />
+                          <span className="text-[11px] uppercase tracking-wide">Admin</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+
+                    <div>
+                      <div className="relative">
+                        <User size={17} className="absolute left-3.5 top-3.5 text-neutral-500" />
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          placeholder={formData.role === 'dealer' ? 'Dealership / Shop Name' : 'Full Name'}
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full pl-10 pr-4 py-3 text-xs bg-[#08080b] border border-white/10 rounded-xl focus:outline-none focus:border-rose-500 text-neutral-100 placeholder-neutral-500 transition"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="relative">
+                        <Phone size={17} className="absolute left-3.5 top-3.5 text-neutral-500" />
+                        <input
+                          type="text"
+                          name="phone"
+                          placeholder="Contact Number (Optional)"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="w-full pl-10 pr-4 py-3 text-xs bg-[#08080b] border border-white/10 rounded-xl focus:outline-none focus:border-rose-500 text-neutral-100 placeholder-neutral-500 transition"
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 <div>
@@ -187,22 +264,6 @@ export default function AuthLandingPage() {
                     />
                   </div>
                 </div>
-
-                {mode === 'signup' && (
-                  <div>
-                    <div className="relative">
-                      <Phone size={17} className="absolute left-3.5 top-3.5 text-neutral-500" />
-                      <input
-                        type="text"
-                        name="phone"
-                        placeholder="Mobile Number (Optional)"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 text-xs bg-[#08080b] border border-white/10 rounded-xl focus:outline-none focus:border-rose-500 text-neutral-100 placeholder-neutral-500 transition"
-                      />
-                    </div>
-                  </div>
-                )}
 
                 <div>
                   <div className="relative">
@@ -253,44 +314,14 @@ export default function AuthLandingPage() {
                 </button>
               </form>
 
-              {/* Quick Demo Test Buttons */}
-              <div className="mt-5 pt-4 border-t border-white/10">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block mb-2">
-                  1-Click Quick Demo Login:
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleDemoLogin('admin@r1moto.com')}
-                    className="py-1.5 px-2 text-[10px] font-bold uppercase bg-white/[0.04] hover:bg-white/[0.08] text-rose-400 border border-white/10 rounded-lg transition"
-                  >
-                    👑 Admin
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDemoLogin('dealer@r1moto.com')}
-                    className="py-1.5 px-2 text-[10px] font-bold uppercase bg-white/[0.04] hover:bg-white/[0.08] text-sky-400 border border-white/10 rounded-lg transition"
-                  >
-                    🏢 Dealer
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDemoLogin('rider@r1moto.com')}
-                    className="py-1.5 px-2 text-[10px] font-bold uppercase bg-white/[0.04] hover:bg-white/[0.08] text-emerald-400 border border-white/10 rounded-lg transition"
-                  >
-                    🏍️ Rider
-                  </button>
-                </div>
-              </div>
-
-              {/* Facebook-Style Divider */}
+              {/* Divider */}
               <div className="my-5 flex items-center">
                 <div className="flex-1 border-t border-white/10"></div>
                 <span className="px-3 text-[10px] text-neutral-500 uppercase font-semibold">or</span>
                 <div className="flex-1 border-t border-white/10"></div>
               </div>
 
-              {/* Facebook-Style Alternate Action Button */}
+              {/* Alternate Action Button */}
               <div className="text-center">
                 {mode === 'login' ? (
                   <button
@@ -328,9 +359,9 @@ export default function AuthLandingPage() {
         </div>
       </div>
 
-      {/* Footer Copyright */}
-      <footer className="py-6 border-t border-white/[0.06] text-center text-[11px] text-neutral-500">
-        <p>© {new Date().getFullYear()} R1 Moto Performance. Precision CVT Engineering & Community.</p>
+      {/* Formal Footer Copyright */}
+      <footer className="py-6 border-t border-white/[0.06] text-center text-xs text-neutral-500 font-medium tracking-wide">
+        <p>© 2026 R1 Moto Performance. All rights reserved.</p>
       </footer>
 
     </div>

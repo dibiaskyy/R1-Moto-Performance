@@ -11,13 +11,19 @@ import DealerPage from './pages/DealerPage';
 import CareersPage from './pages/CareersPage';
 import ContactPage from './pages/ContactPage';
 import CompatibilityPage from './pages/CompatibilityPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 // First-visit route handler: defaults to login/signup for unauthenticated first-time visitors
 function FirstVisitHandler() {
-  const { isAuthenticated, isGuest, loading } = useAuth();
+  const { isAuthenticated, isGuest, role, loading } = useAuth();
 
   if (loading) {
     return <div className="min-h-screen bg-[#070709]" />;
+  }
+
+  // If logged in as admin, route to admin control center
+  if (isAuthenticated && role === 'admin') {
+    return <Navigate to="/admin" replace />;
   }
 
   // If already logged in or continuing as guest, proceed to homepage
@@ -25,11 +31,11 @@ function FirstVisitHandler() {
     return <Navigate to="/home" replace />;
   }
 
-  // Otherwise, first view is the dedicated Facebook-style login/signup landing page
+  // Otherwise, first view is the dedicated login/signup landing page
   return <AuthLandingPage />;
 }
 
-// Standard React Router v6 Layout with Outlet
+// User storefront & admin shared layout: maintains the signature Navbar and Footer
 function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-[#070709] text-neutral-100 selection:bg-rose-600 selection:text-white">
@@ -50,11 +56,14 @@ export default function App() {
           {/* Root path: shows login/signup on first visit */}
           <Route path="/" element={<FirstVisitHandler />} />
 
-          {/* Standalone Facebook-Style Login & Registration */}
+          {/* Standalone Login & Registration */}
           <Route path="/login" element={<AuthLandingPage />} />
           <Route path="/register" element={<AuthLandingPage />} />
 
-          {/* Main Website with Navbar and Footer */}
+          {/* Standalone Admin Portal - Clean, dedicated control panel without user storefront navbar */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+
+          {/* Main Website Layout with unified Navbar and Footer across storefront tabs */}
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/catalog" element={<CatalogPage />} />

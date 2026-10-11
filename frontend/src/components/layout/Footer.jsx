@@ -39,7 +39,7 @@ export default function Footer() {
               Join the R1 Performance Club
             </h4>
             <p className="text-xs text-neutral-400">
-              Subscribe for new scooter fitment updates, track test releases, and exclusive wholesale dealer catalogs.
+              Subscribe for new motor updates, track test releases, and exclusive wholesale dealer catalogs.
             </p>
             <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2 max-w-md pt-1">
               <input
@@ -97,7 +97,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <Link to="/compatibility" className="hover:text-white transition flex items-center space-x-1.5">
-                  <span>Scooter Fitment Lookup</span>
+                  <span>Motor Compatibility Lookup</span>
                   <span className="px-1.5 py-0.2 bg-rose-600/30 text-rose-400 rounded text-[9px] font-bold">2-WAY</span>
                 </Link>
               </li>

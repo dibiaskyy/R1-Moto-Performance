@@ -32,7 +32,7 @@ export default function ContactPage() {
         </h1>
 
         <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-          Need help with scooter fitment, dyno tuning questions, wholesale orders, or warranty claims? Our technical support specialists are ready to help.
+          Need help with Motor Compatibility, dyno tuning questions, wholesale orders, or warranty claims? Our technical support specialists are ready to help.
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block mb-1">
-                    Scooter Model (Optional)
+                    Motor Model (Optional)
                   </label>
                   <input
                     type="text"

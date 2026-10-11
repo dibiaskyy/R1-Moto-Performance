@@ -73,15 +73,15 @@ export default function CompatibilityPage() {
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-neutral-400 text-[11px] font-semibold uppercase tracking-widest">
           <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-          <span>TWO-WAY FITMENT LOOKUP</span>
+          <span>TWO-WAY MOTOR COMPATIBILITY</span>
         </div>
 
         <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-white uppercase tracking-tight">
-          Scooter Compatibility Engine
+          Motor Compatibility Engine
         </h1>
 
         <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-          Select your scooter platform to see all guaranteed plug-and-play R1 pulleys, bells, rollers, and brake pads engineered specifically for your engine.
+          Select your motorcycle or scooter platform to see all guaranteed plug-and-play R1 pulleys, bells, rollers, and brake pads engineered specifically for your engine.
         </p>
       </div>
 

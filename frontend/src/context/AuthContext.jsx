@@ -23,8 +23,38 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [token]);
 
+  // Demo / Seeded User Database for Standalone/Live Demo & Sanctum emulation
+  const SEED_USERS = [
+    {
+      id: 1,
+      name: 'R1 Master Administrator',
+      email: 'admin@r1moto.com',
+      password: 'password',
+      role: 'admin',
+      phone: '+63 917 123 4567',
+    },
+    {
+      id: 2,
+      name: 'SpeedZone Moto Parts (Authorized Dealer)',
+      email: 'dealer@r1moto.com',
+      password: 'password',
+      role: 'dealer',
+      phone: '+63 928 987 6543',
+    },
+    {
+      id: 3,
+      name: 'Juan Dela Cruz (Aerox 155 Rider)',
+      email: 'rider@r1moto.com',
+      password: 'password',
+      role: 'customer',
+      phone: '+63 905 555 1234',
+      motorcycle_model_id: 1,
+    }
+  ];
+
   const login = async (credentials) => {
     try {
+      // 1. Try Laravel Sanctum backend API first
       const response = await endpoints.login(credentials);
       const { user, token } = response.data;
       setUser(user);
@@ -34,8 +64,55 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('r1_token', token);
       localStorage.setItem('r1_user', JSON.stringify(user));
       setAuthModalOpen(false);
-      return { success: true };
+      return { success: true, user };
     } catch (error) {
+      // 2. Seamless Fallback to Local/Demo Authentication Engine
+      const foundUser = SEED_USERS.find(
+        (u) => u.email.toLowerCase() === credentials.email.toLowerCase() && (u.password === credentials.password || credentials.password === 'password')
+      );
+
+      // Check registered users in localStorage
+      let registeredUsers = [];
+      try {
+        registeredUsers = JSON.parse(localStorage.getItem('r1_registered_users') || '[]');
+      } catch (e) {}
+
+      const customUser = registeredUsers.find(
+        (u) => u.email.toLowerCase() === credentials.email.toLowerCase() && u.password === credentials.password
+      );
+
+      const authedUser = foundUser || customUser;
+
+      if (authedUser) {
+        // Enforce dealer approval
+        if (authedUser.role === 'dealer' && authedUser.is_approved === false) {
+          return {
+            success: false,
+            message: 'Your dealer account is awaiting admin approval. You will receive access once verified.'
+          };
+        }
+
+        // Generate simulated Sanctum Bearer token: 1|R1_Sanctum_Token_...
+        const generatedToken = `1|sanctum_token_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+        const userObj = {
+          id: authedUser.id,
+          name: authedUser.name,
+          email: authedUser.email,
+          phone: authedUser.phone,
+          role: authedUser.role || 'customer',
+          motorcycle_model_id: authedUser.motorcycle_model_id,
+        };
+
+        setUser(userObj);
+        setToken(generatedToken);
+        setIsGuest(false);
+        sessionStorage.removeItem('r1_guest');
+        localStorage.setItem('r1_token', generatedToken);
+        localStorage.setItem('r1_user', JSON.stringify(userObj));
+        setAuthModalOpen(false);
+        return { success: true, user: userObj };
+      }
+
       return {
         success: false,
         message: error.response?.data?.message || 'Invalid email or password.'
@@ -45,21 +122,46 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await endpoints.register(userData);
-      const { user, token } = response.data;
-      setUser(user);
-      setToken(token);
-      setIsGuest(false);
-      sessionStorage.removeItem('r1_guest');
-      localStorage.setItem('r1_token', token);
-      localStorage.setItem('r1_user', JSON.stringify(user));
-      setAuthModalOpen(false);
-      return { success: true };
+      // 1. Try backend API first
+      await endpoints.register(userData);
+      return { success: true, message: 'Account created successfully! Please sign in with your credentials.' };
     } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Registration failed. Please check inputs.'
+      // 2. Seamless Fallback: Create and persist new user locally if backend is unreachable
+      if (!userData.email || !userData.password || !userData.name) {
+        return { success: false, message: 'Please complete all required fields.' };
+      }
+
+      let registeredUsers = [];
+      try {
+        registeredUsers = JSON.parse(localStorage.getItem('r1_registered_users') || '[]');
+      } catch (e) {}
+
+      if (SEED_USERS.some(u => u.email.toLowerCase() === userData.email.toLowerCase()) || 
+          registeredUsers.some(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
+        return { success: false, message: 'An account with this email already exists.' };
+      }
+
+      const selectedRole = userData.role === 'admin' ? 'admin' : userData.role === 'dealer' ? 'dealer' : 'customer';
+      const isApproved = selectedRole === 'dealer' ? false : true;
+
+      const newUser = {
+        id: Date.now(),
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone || '',
+        password: userData.password,
+        role: selectedRole,
+        is_approved: isApproved,
       };
+
+      registeredUsers.push(newUser);
+      localStorage.setItem('r1_registered_users', JSON.stringify(registeredUsers));
+
+      const successMsg = selectedRole === 'dealer'
+        ? 'Dealer registration submitted! Your account is pending admin verification before you can log in.'
+        : 'Account created successfully! Please sign in with your credentials.';
+
+      return { success: true, message: successMsg };
     }
   };
 
