@@ -18,6 +18,7 @@ PROJECT_PROPOSAL_AND_SPRINT_PLAN.md
 *.tmp
 *.log
 *.zip
+*.bat
 test_pdf.html
 test_doc.html
 proposal_source.html
