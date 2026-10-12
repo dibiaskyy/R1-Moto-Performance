@@ -33,12 +33,12 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop Navigation Links (Motorsport uppercase styling) */}
-        <nav className="hidden lg:flex items-center space-x-1 font-heading text-xs font-semibold tracking-wider">
+        {/* Desktop Navigation Links (Motorsport uppercase styling - crisp, non-wrapping) */}
+        <nav className="hidden xl:flex items-center space-x-1 font-heading text-[11px] 2xl:text-xs font-semibold tracking-wider whitespace-nowrap flex-nowrap">
           
           <Link
             to="/home"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/home')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
@@ -47,7 +47,7 @@ export default function Navbar() {
             HOME
           </Link>
 
-          {/* About Us with Dropdown (Matching User's Diagram) */}
+          {/* About Us with Dropdown */}
           <div 
             className="relative"
             onMouseEnter={() => setAboutDropdownOpen(true)}
@@ -55,14 +55,14 @@ export default function Navbar() {
           >
             <Link
               to="/about"
-              className={`px-3.5 py-2 rounded-full transition-all duration-200 flex items-center space-x-1 ${
+              className={`px-3 py-1.5 rounded-full transition-all duration-200 flex items-center space-x-1 ${
                 location.pathname.startsWith('/about')
                   ? 'text-white bg-white/10 shadow-inner'
                   : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
               }`}
             >
               <span>ABOUT US</span>
-              <ChevronDown size={12} className="transition-transform group-hover:rotate-180" />
+              <ChevronDown size={11} className="transition-transform group-hover:rotate-180" />
             </Link>
 
             {aboutDropdownOpen && (
@@ -97,7 +97,7 @@ export default function Navbar() {
 
           <Link
             to="/catalog"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/catalog')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
@@ -108,29 +108,29 @@ export default function Navbar() {
 
           <Link
             to="/compatibility"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/compatibility')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
-            MOTOR COMPATIBILITY
+            COMPATIBILITY
           </Link>
 
           <Link
             to="/dealer"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/dealer')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
-            BECOME A DEALER / DISTRIBUTOR
+            DEALERSHIP
           </Link>
 
           <Link
             to="/careers"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/careers')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
@@ -141,41 +141,40 @@ export default function Navbar() {
 
           <Link
             to="/contact"
-            className={`px-3.5 py-2 rounded-full transition-all duration-200 ${
+            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
               isActive('/contact')
                 ? 'text-white bg-white/10 shadow-inner'
                 : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
-            CONTACT US
+            CONTACT
           </Link>
 
           {role === 'admin' && (
             <Link
               to="/admin"
-              className={`px-3.5 py-2 rounded-full transition-all duration-200 flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-full transition-all duration-200 flex items-center space-x-1.5 ${
                 isActive('/admin')
                   ? 'text-amber-300 bg-amber-500/20 border border-amber-500/40 shadow-inner'
                   : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
               }`}
             >
-              <Shield size={13} />
-              <span>ADMIN PANEL</span>
+              <Shield size={12} />
+              <span>ADMIN</span>
             </Link>
           )}
         </nav>
 
         {/* Right Action Icons & Auth Controls (Automotive E-commerce layout) */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-3 shrink-0">
           
-
           {/* Quick Search Button */}
           <Link
             to="/catalog"
             className="p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/[0.06] transition"
             title="Search Products"
           >
-            <Search size={17} />
+            <Search size={16} />
           </Link>
 
           {/* Shopping Cart Pill Button */}
@@ -184,7 +183,7 @@ export default function Navbar() {
             className="relative p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/[0.06] transition"
             title="Cart"
           >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={17} />
             <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-extrabold flex items-center justify-center">
               2
             </span>
@@ -195,35 +194,36 @@ export default function Navbar() {
 
           {/* User Authentication Actions */}
           {isAuthenticated ? (
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#121217] border border-white/10 rounded-full">
-                <div className="w-6 h-6 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
-                  {user.name.charAt(0)}
+            <div className="flex items-center space-x-2 shrink-0">
+              <div 
+                className="flex items-center space-x-2 px-2.5 py-1.5 bg-[#121217] border border-white/10 rounded-full hover:border-white/20 transition group"
+                title={user?.name || 'Account'}
+              >
+                <div className="w-6 h-6 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs shrink-0 border border-rose-500/30">
+                  {(user?.name || 'U').charAt(0).toUpperCase()}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-neutral-200 leading-tight truncate max-w-[100px]">
-                    {user.name}
-                  </span>
-                </div>
+                <span className="text-xs font-semibold text-neutral-200 leading-tight truncate max-w-[110px] xl:max-w-[130px] whitespace-nowrap">
+                  {user?.name || 'User'}
+                </span>
               </div>
 
               {role === 'admin' && (
                 <Link
                   to="/admin"
-                  className="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 rounded-full font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition shadow-sm"
+                  className="px-2.5 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 rounded-full font-bold text-[10px] uppercase tracking-wider flex items-center space-x-1 transition shadow-sm whitespace-nowrap"
                   title="Admin Dashboard"
                 >
-                  <Shield size={14} />
-                  <span>Admin Panel</span>
+                  <Shield size={12} />
+                  <span>Admin</span>
                 </Link>
               )}
 
               <button
                 onClick={handleLogout}
-                className="p-2 text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] rounded-full transition"
+                className="p-1.5 text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] rounded-full transition"
                 title="Log Out"
               >
-                <LogOut size={17} />
+                <LogOut size={16} />
               </button>
             </div>
           ) : (

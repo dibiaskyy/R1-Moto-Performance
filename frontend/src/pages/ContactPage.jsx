@@ -32,7 +32,7 @@ export default function ContactPage() {
         </h1>
 
         <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed">
-          Need help with Motor Compatibility, dyno tuning questions, wholesale orders, or warranty claims? Our technical support specialists are ready to help.
+          Need help with Motor Compatibility, parts questions, wholesale orders, or warranty claims? Our technical support specialists are ready to help.
         </p>
       </div>
 
@@ -46,7 +46,16 @@ export default function ContactPage() {
             </div>
             <h3 className="font-heading font-bold text-base text-white uppercase">Customer & Technical Hotline</h3>
             <p className="text-xs text-neutral-400">Available Monday to Saturday, 8:00 AM – 6:00 PM PHT</p>
-            <div className="text-sm font-semibold text-white pt-1">+63 (2) 8892-R1MOTO / +63 917 123 4567</div>
+            <div className="text-sm font-semibold text-white pt-1">000</div>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#0f0f14] border border-white/10 space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-rose-600/10 text-rose-500 flex items-center justify-center font-bold">
+              <MapPin size={20} />
+            </div>
+            <h3 className="font-heading font-bold text-base text-white uppercase">Our Location</h3>
+            <p className="text-xs text-neutral-400">Central facility & direct dealer dispatch</p>
+            <div className="text-xs font-semibold text-neutral-200 pt-1">506 Boni Ave, Mandaluyong, Philippines</div>
           </div>
 
           <div className="p-6 rounded-2xl bg-[#0f0f14] border border-white/10 space-y-2">
@@ -65,7 +74,7 @@ export default function ContactPage() {
             <h3 className="font-heading font-bold text-base text-white uppercase">Official Facebook Page</h3>
             <p className="text-xs text-neutral-400">Real-time messenger support and community group</p>
             <a
-              href="https://www.facebook.com/r1motoperformance"
+              href="https://www.facebook.com/r1motoperformance/directory_basic_info"
               target="_blank"
               rel="noreferrer"
               className="text-xs font-semibold text-rose-400 hover:underline block pt-1"

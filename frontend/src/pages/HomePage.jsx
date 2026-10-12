@@ -57,7 +57,7 @@ export default function HomePage() {
             className="w-full sm:w-auto px-8 py-3.5 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 hover:text-white border border-white/15 hover:border-rose-500/80 font-bold text-xs uppercase tracking-wider rounded-full transition-all duration-300 flex items-center justify-center space-x-2 backdrop-blur-sm"
           >
             <Bike size={16} className="text-rose-500" />
-            <span>Check Fitment</span>
+            <span>Motor Compatibility</span>
           </Link>
         </div>
 

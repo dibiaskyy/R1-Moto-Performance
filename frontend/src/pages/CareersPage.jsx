@@ -8,12 +8,12 @@ export default function CareersPage() {
   const jobs = [
     {
       id: 1,
-      title: 'Senior CVT R&D Technician & Dyno Tuner',
+      title: 'Senior CVT R&D Technician',
       dept: 'Engineering & R&D',
       type: 'Full-Time',
-      location: 'Quezon City Tuning Lab',
-      desc: 'Lead dyno testing sessions, analyze CVT belt slip telemetry, prototype high-angle ramp pulleys, and calibrate clutch shoe springs for production.',
-      requirements: ['3+ years in motorcycle mechanical tuning or CVT mechanics', 'Experience running chassis dynamometers', 'Strong knowledge of Yamaha and Honda scooter platforms']
+      location: 'Mandaluyong Testing Facility',
+      desc: 'Lead real-world testing sessions, analyze CVT belt grip, prototype high-angle ramp pulleys, and calibrate clutch shoe springs for production.',
+      requirements: ['3+ years in motorcycle mechanical tuning or CVT mechanics', 'Experience in motorcycle testing and tuning', 'Strong knowledge of Yamaha and Honda scooter platforms']
     },
     {
       id: 2,
