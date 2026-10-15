@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import { Shield, User, LogOut, Menu, X, Bike, ShoppingBag, Search, ChevronDown, Target, MapPin, ExternalLink } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, role } = useAuth();
+  const { totalCount, setIsCartOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [navSearchOpen, setNavSearchOpen] = useState(false);
+  const [navSearchQuery, setNavSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleNavSearch = (e) => {
+    e.preventDefault();
+    if (navSearchQuery.trim()) {
+      navigate(`/catalog?search=${encodeURIComponent(navSearchQuery.trim())}`);
+      setNavSearchOpen(false);
+      setNavSearchQuery('');
+    }
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -128,28 +141,6 @@ export default function Navbar() {
             DEALERSHIP
           </Link>
 
-          <Link
-            to="/careers"
-            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
-              isActive('/careers')
-                ? 'text-white bg-white/10 shadow-inner'
-                : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
-            }`}
-          >
-            CAREERS
-          </Link>
-
-          <Link
-            to="/contact"
-            className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
-              isActive('/contact')
-                ? 'text-white bg-white/10 shadow-inner'
-                : 'text-neutral-400 hover:text-white hover:bg-white/[0.05]'
-            }`}
-          >
-            CONTACT
-          </Link>
-
           {role === 'admin' && (
             <Link
               to="/admin"
@@ -168,26 +159,52 @@ export default function Navbar() {
         {/* Right Action Icons & Auth Controls (Automotive E-commerce layout) */}
         <div className="hidden md:flex items-center space-x-3 shrink-0">
           
-          {/* Quick Search Button */}
-          <Link
-            to="/catalog"
-            className="p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/[0.06] transition"
-            title="Search Products"
-          >
-            <Search size={16} />
-          </Link>
+          {/* Quick Search Button & Expandable Input */}
+          <div className="relative">
+            {navSearchOpen ? (
+              <form onSubmit={handleNavSearch} className="flex items-center">
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Search part, model..."
+                  value={navSearchQuery}
+                  onChange={(e) => setNavSearchQuery(e.target.value)}
+                  className="w-44 lg:w-56 px-3 py-1.5 text-xs bg-[#111116] border border-rose-500/50 rounded-full text-white placeholder-neutral-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setNavSearchOpen(false)}
+                  className="ml-1.5 p-1 text-neutral-400 hover:text-white"
+                >
+                  <X size={14} />
+                </button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setNavSearchOpen(true)}
+                className="p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/[0.06] transition"
+                title="Search Products"
+              >
+                <Search size={16} />
+              </button>
+            )}
+          </div>
 
-          {/* Shopping Cart Pill Button */}
-          <Link
-            to="/catalog"
+          {/* Dynamic Shopping Cart Drawer Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsCartOpen(true)}
             className="relative p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/[0.06] transition"
-            title="Cart"
+            title="Shopping Cart"
           >
             <ShoppingBag size={17} />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-extrabold flex items-center justify-center">
-              2
-            </span>
-          </Link>
+            {totalCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-extrabold flex items-center justify-center animate-scale-in">
+                {totalCount}
+              </span>
+            )}
+          </button>
 
           {/* Divider */}
           <div className="h-4 w-px bg-white/10"></div>
@@ -286,20 +303,6 @@ export default function Navbar() {
             className="block px-3 py-2 text-sm font-semibold tracking-wider rounded-lg text-neutral-300 hover:text-white hover:bg-white/[0.05]"
           >
             BECOME A DEALER / DISTRIBUTOR
-          </Link>
-          <Link
-            to="/careers"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold tracking-wider rounded-lg text-neutral-300 hover:text-white hover:bg-white/[0.05]"
-          >
-            CAREERS
-          </Link>
-          <Link
-            to="/contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold tracking-wider rounded-lg text-neutral-300 hover:text-white hover:bg-white/[0.05]"
-          >
-            CONTACT US
           </Link>
           
           <div className="pt-4 border-t border-white/[0.08] flex flex-col space-y-2">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { 
   ShoppingBag, 
   ArrowRight, 
@@ -27,6 +28,7 @@ import {
 
 export default function CatalogPage() {
   const { role } = useAuth();
+  const { addToCart } = useCart();
   const [searchParams] = useSearchParams();
 
   // Filter States
@@ -44,9 +46,11 @@ export default function CatalogPage() {
     const brandParam = searchParams.get('brand');
     const modelParam = searchParams.get('model');
     const catParam = searchParams.get('category');
+    const searchParam = searchParams.get('search');
     if (brandParam) setSelectedBrand(brandParam);
     if (modelParam) setSelectedModel(modelParam);
     if (catParam) setSelectedCategory(catParam);
+    if (searchParam) setSearchQuery(searchParam);
   }, [searchParams]);
 
   // Helper to map product & spec highlight index to its authentic circular macro zoom directly from the product image itself
@@ -978,8 +982,11 @@ export default function CatalogPage() {
     const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
 
     // Search query match
-    const fullText = (p.name + ' ' + p.desc + ' ' + p.specs + ' ' + p.partNumber + ' ' + p.brand + ' ' + p.model + ' ' + p.fitment.join(' ')).toLowerCase();
-    const matchQuery = searchQuery === '' || fullText.includes(searchQuery.toLowerCase());
+    const fitmentText = Array.isArray(p.fitment) ? p.fitment.join(' ') : (p.fitmentSummary || '');
+    const specsText = typeof p.specs === 'string' ? p.specs : (Array.isArray(p.specHighlights) ? p.specHighlights.map(s => s.title + ' ' + s.desc).join(' ') : '');
+    const fullText = `${p.name || ''} ${p.desc || ''} ${specsText} ${p.partNumber || p.sku || ''} ${p.brand || ''} ${p.model || ''} ${fitmentText}`.toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
+    const matchQuery = query === '' || fullText.includes(query);
 
     return matchBrand && matchModel && matchCat && matchQuery;
   }).sort((a, b) => {
@@ -998,15 +1005,19 @@ export default function CatalogPage() {
 
   const handleAddToCart = (product, e) => {
     if (e) e.stopPropagation();
+    if (!product) return;
+    addToCart(product, 1);
     setAddedItem(product.id);
     setTimeout(() => {
       setAddedItem(null);
-    }, 2000);
+    }, 1800);
   };
 
   const handleBuyNow = (product, e) => {
     if (e) e.stopPropagation();
-    alert(`Proceeding to checkout for ${product.name} (${product.price})`);
+    if (!product) return;
+    addToCart(product, 1);
+    setQuickViewProduct(null);
   };
 
   const openProductDetails = (product) => {

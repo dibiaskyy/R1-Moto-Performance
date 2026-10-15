@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/cart/CartDrawer';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
@@ -40,6 +42,7 @@ function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-[#070709] text-neutral-100 selection:bg-rose-600 selection:text-white">
       <Navbar />
+      <CartDrawer />
       <main className="flex-grow">
         <Outlet />
       </main>
@@ -52,7 +55,8 @@ export default function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
+        <CartProvider>
+          <Routes>
           {/* Root path: shows login/signup on first visit */}
           <Route path="/" element={<FirstVisitHandler />} />
 
@@ -76,6 +80,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Route>
         </Routes>
+        </CartProvider>
       </AuthProvider>
     </Router>
   );
